@@ -50,6 +50,24 @@ export default function ScanPage() {
     pickFile(null);
   }
 
+  async function runSample(id: string) {
+    setSubmitting(true);
+    setError(null);
+    setResult(null);
+    try {
+      const res = await fetch(`/api/sample?id=${encodeURIComponent(id)}`);
+      const body = (await res.json()) as ScanResponse | { error: string };
+      if (!res.ok || "error" in body) {
+        throw new Error("error" in body ? body.error : `Server ${res.status}`);
+      }
+      setResult(body);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load sample");
+    } finally {
+      setSubmitting(false);
+    }
+  }
+
   return (
     <main className="min-h-screen bg-white text-neutral-900">
       <div className="mx-auto max-w-3xl px-6 py-16">
@@ -132,6 +150,8 @@ export default function ScanPage() {
               {error}
             </p>
           )}
+
+          <SamplePicker onPick={runSample} disabled={submitting} />
         </section>
 
         {result && (
@@ -230,6 +250,72 @@ function ResultPanel({ result }: { result: ScanResponse }) {
     </div>
   );
 }
+
+function SamplePicker({
+  onPick,
+  disabled,
+}: {
+  onPick: (id: string) => void;
+  disabled: boolean;
+}) {
+  return (
+    <div className="mt-10 rounded-md border border-neutral-200 bg-neutral-50 px-5 py-4">
+      <div className="flex items-center justify-between">
+        <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-500">
+          Try a sample scan
+        </p>
+        <p className="font-mono text-[11px] uppercase tracking-widest text-neutral-400">
+          No Gemini call
+        </p>
+      </div>
+      <p className="mt-2 text-sm text-neutral-600">
+        Each sample runs the real matcher against the local recall corpus —
+        no photo, no API key, instant result.
+      </p>
+      <div className="mt-4 grid grid-cols-1 gap-2 sm:grid-cols-2">
+        {SAMPLES.map((s) => (
+          <button
+            key={s.id}
+            type="button"
+            disabled={disabled}
+            onClick={() => onPick(s.id)}
+            className="rounded-md border border-neutral-300 bg-white px-4 py-3 text-left text-sm transition hover:border-neutral-500 hover:bg-neutral-50 disabled:opacity-50"
+          >
+            <span className="font-medium text-neutral-900">{s.label}</span>
+            <span className="mt-1 block text-xs text-neutral-500">
+              {s.blurb}
+            </span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+const SAMPLES = [
+  {
+    id: "match-goodgather",
+    label: "Potential match — Good & Gather lot 4169",
+    blurb:
+      "Scan of a baby food pouch bottom showing lot 4169 — within the recalled range.",
+  },
+  {
+    id: "nomatch-goodgather",
+    label: "No match — Good & Gather safe lot",
+    blurb:
+      "Same product line, different lot. Identity match, lot outside range.",
+  },
+  {
+    id: "info-needed",
+    label: "More info needed — front of package",
+    blurb: "Front of a Dove bar — no lot code visible.",
+  },
+  {
+    id: "out-of-scope",
+    label: "No matching recalls — unrelated product",
+    blurb: "Brand/product don't overlap anything in the corpus.",
+  },
+];
 
 function BestMatch({ best }: { best: ScanResponse["bestMatch"] }) {
   if (!best) {

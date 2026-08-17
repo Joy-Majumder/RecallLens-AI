@@ -61,8 +61,14 @@ export function evaluate(input: MatchInput, recall: Recall): MatchResult {
     rules.push(evaluateCriterion(criterion, input));
   }
 
-  const evaluated = rules.filter((r) => r.evaluated);
-  const identityPassed = identityPassedFor(rules);
+  // Multiple criteria on the same field are OR'd, not AND'd. A recall
+  // listing "lots 4167, 4169" means "this lot OR this lot" — if any one
+  // matches, the field is satisfied. Without this, the conjunction in
+  // outcomes.ts would force `unable_to_verify` whenever one alternative
+  // fails even though another passed.
+  const fieldLevelRules = collapseByField(rules);
+  const evaluated = fieldLevelRules.filter((r) => r.evaluated);
+  const identityPassed = identityPassedFor(fieldLevelRules);
 
   const hasAnyCriteria = recall.criteria.length > 0;
   const hasEvaluatedCriteria = evaluated.length > 0;
@@ -73,7 +79,7 @@ export function evaluate(input: MatchInput, recall: Recall): MatchResult {
     specificEvaluated.length > 0 && specificEvaluated.every((r) => !r.passed);
 
   const { outcome, message } = determineOutcome({
-    rules,
+    rules: fieldLevelRules,
     missingFields,
     hasEvaluatedCriteria,
     hasAnyCriteria,
@@ -92,11 +98,57 @@ export function evaluate(input: MatchInput, recall: Recall): MatchResult {
   return {
     outcome,
     confidence,
-    rules,
+    rules: fieldLevelRules,
     missingFields: dedupe(missingFields),
     message,
     recallId: recall.id,
   };
+}
+
+/**
+ * Collapse multiple per-criterion rules on the same field into one field-level
+ * rule. Pass/fail is OR across the alternatives: a recall listing lots
+ * "4167 OR 4169" passes when the product matches at least one.
+ *
+ * `evaluated` follows the same rule — a field counts as evaluated if any
+ * of its alternatives was evaluated. `score` is the best score across
+ * alternatives; `reason` is the passing alternative's reason (or the
+ * first one if none passed).
+ */
+function collapseByField(rules: RuleResult[]): RuleResult[] {
+  const byField = new Map<string, RuleResult[]>();
+  for (const r of rules) {
+    const list = byField.get(r.field) ?? [];
+    list.push(r);
+    byField.set(r.field, list);
+  }
+  const out: RuleResult[] = [];
+  for (const [field, group] of byField) {
+    if (group.length === 1) {
+      out.push(group[0]);
+      continue;
+    }
+    const evaluated = group.some((r) => r.evaluated);
+    const passing = group.find((r) => r.passed);
+    const representative = passing ?? group[0];
+    const bestScore = group.reduce((best, r) => Math.max(best, r.score), 0);
+    out.push({
+      rule: representative.rule,
+      field: representative.field,
+      evaluated,
+      passed: !!passing,
+      score: bestScore,
+      reason: passing
+        ? passing.reason
+        : group
+            .filter((r) => r.evaluated)
+            .map((r) => r.reason)
+            .join(" | ") || representative.reason,
+    });
+    // Preserve field name on the synthesized row.
+    out[out.length - 1].field = field as CriterionField;
+  }
+  return out;
 }
 
 function gatherMissingFields(input: MatchInput, recall: Recall): string[] {

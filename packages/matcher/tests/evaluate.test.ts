@@ -220,3 +220,50 @@ describe("evaluate — safety-critical front-only case", () => {
     expect(r.outcome).toBe("more_info_needed");
   });
 });
+describe("multi-criterion same-field OR semantics", () => {
+  it("treats multiple lot_code criteria as alternatives, not conjunction", () => {
+    // Recall lists TWO recalled lots — 4167 and 4169. Product matches the
+    // second one. Should be a potential_match, not unable_to_verify.
+    const recall = makeRecall({
+      id: "gg-puree",
+      brand: "Good & Gather",
+      productName: "Baby Vegetable Puree",
+      criteria: [
+        { field: "brand", operator: "eq", value: "Good & Gather" },
+        { field: "lot_code", operator: "eq", value: "4167" },
+        { field: "lot_code", operator: "eq", value: "4169" },
+      ],
+    });
+    const input = makeInput({
+      product: {
+        brand: "Good & Gather",
+        productName: "Baby Vegetable Puree",
+        lotCode: "4169",
+      },
+    });
+    const result = evaluate(input, recall);
+    expect(result.outcome).toBe("potential_match");
+  });
+
+  it("still rejects when product matches none of the alternative lots", () => {
+    const recall = makeRecall({
+      id: "gg-puree",
+      brand: "Good & Gather",
+      productName: "Baby Vegetable Puree",
+      criteria: [
+        { field: "brand", operator: "eq", value: "Good & Gather" },
+        { field: "lot_code", operator: "eq", value: "4167" },
+        { field: "lot_code", operator: "eq", value: "4169" },
+      ],
+    });
+    const input = makeInput({
+      product: {
+        brand: "Good & Gather",
+        productName: "Baby Vegetable Puree",
+        lotCode: "9999",
+      },
+    });
+    const result = evaluate(input, recall);
+    expect(result.outcome).toBe("no_match");
+  });
+});
