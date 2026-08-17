@@ -35,3 +35,4 @@ See `linked-doodling-raccoon.md` (in `.puku-cli/plans/`) for the full design doc
 ## Verification tool, not a certified safety authority
 
 Every result links to the original official recall notice. The verification framing is shown above match language, not buried in a footer.# RecallLens-AI
+# RecallLens-AI
