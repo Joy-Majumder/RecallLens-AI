@@ -1,0 +1,27 @@
+{
+  "name": "@recalllens/ingestion",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "sync": "tsx scripts/run-sync.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0",
+    "@recalllens/extraction": "workspace:*",
+    "@recalllens/matcher": "workspace:*",
+    "fast-xml-parser": "^4.4.0",
+    "dotenv": "^16.4.5"
+  },
+  "devDependencies": {
+    "tsx": "^4.15.0",
+    "typescript": "^5.4.5",
+    "@types/node": "^20.12.7",
+    "vitest": "^1.6.0"
+  }
+}

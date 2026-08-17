@@ -1,0 +1,70 @@
+[
+  {
+    "id": "fruselva-goodgather-puree-2025",
+    "source": "fda",
+    "source_id": "FRUSELVA-GOODGATHER-2025-12",
+    "title": "Good & Gather Baby Vegetable Puree (Pea, Zucchini, Kale & Thyme) — Elevated Lead",
+    "description": "Fruselva is recalling specific lots of Good & Gather Baby Pea, Zucchini, Kale & Thyme Vegetable Puree (4 oz tub) sold at Target after routine sampling found elevated lead levels. The affected units are marked with lot code 4169 (best-by Dec 9, 2025) or lot code 4167 (best-by Dec 7, 2025). Consumers should stop using these products and return them to Target for a refund.",
+    "brand": "Good & Gather",
+    "productName": "Baby Pea, Zucchini, Kale & Thyme Vegetable Puree",
+    "category": "baby_food",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/fruselva-issues-voluntary-recall-good-gather-baby-pea-zucchini-kale-thyme-vegetable-puree-elevated",
+    "publishedAt": "2025-12-12T00:00:00Z",
+    "criteria": [
+      { "field": "brand", "operator": "eq", "value": "Good & Gather", "rawText": "Good & Gather" },
+      { "field": "product_name", "operator": "contains", "value": "Vegetable Puree", "rawText": "Baby Pea, Zucchini, Kale & Thyme Vegetable Puree" },
+      { "field": "lot_code", "operator": "eq", "value": "4167", "rawText": "Lot 4167" },
+      { "field": "lot_code", "operator": "eq", "value": "4169", "rawText": "Lot 4169" }
+    ]
+  },
+  {
+    "id": "hometown-birchbenders-pancake-2026",
+    "source": "fda",
+    "source_id": "HOMETOWN-BIRCHBENDERS-2026-02",
+    "title": "Birch Benders Sweet Potato Pancake Mix — Undeclared Egg",
+    "description": "Hometown Food Company is recalling a single lot of Birch Benders Sweet Potato Pancake Mix (12 oz) because it contains egg that is not declared on the ingredient label. People with egg allergy could have a serious or life-threatening reaction. The recall covers one specific lot code; consumers should check the lot number on the side of the box and return the product for a refund.",
+    "brand": "Birch Benders",
+    "productName": "Sweet Potato Pancake Mix",
+    "category": "pancake_mix",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts",
+    "publishedAt": "2026-01-28T00:00:00Z",
+    "criteria": [
+      { "field": "brand", "operator": "eq", "value": "Birch Benders", "rawText": "Birch Benders" },
+      { "field": "product_name", "operator": "contains", "value": "Pancake Mix", "rawText": "Sweet Potato Pancake Mix" },
+      { "field": "lot_code", "operator": "prefix", "value": "SP", "rawText": "Lot codes beginning with SP" }
+    ]
+  },
+  {
+    "id": "nestle-leancuisine-2025",
+    "source": "cpsc",
+    "source_id": "25-098",
+    "title": "Nestlé Lean Cuisine and Stouffer's Frozen Meals — Foreign Material Contamination",
+    "description": "Nestlé is recalling several varieties of Lean Cuisine and Stouffer's frozen meals manufactured between August 2024 and March 2025 after reports of wood-like material in the product. Affected meals have specific batch numbers listed per variety; consumers should check the side of the carton.",
+    "brand": "Lean Cuisine",
+    "productName": "Frozen Meals (multiple varieties)",
+    "category": "frozen_meal",
+    "sourceUrl": "https://www.cpsc.gov/Recalls/2025/nestle-usa-recalls-frozen-meals-due-possible-foreign-material-contamination",
+    "publishedAt": "2025-04-22T00:00:00Z",
+    "criteria": [
+      { "field": "brand", "operator": "contains", "value": "Lean Cuisine", "rawText": "Lean Cuisine" },
+      { "field": "mfg_date", "operator": "range", "value": { "min": "2024-08-01", "max": "2025-03-31" }, "rawText": "Manufactured between August 2024 and March 2025" }
+    ]
+  },
+  {
+    "id": "purina-proplan-2024",
+    "source": "fda",
+    "source_id": "PURINA-PROPLAN-2024-03",
+    "title": "Purina Pro Plan Veterinary Diets — Elevated Vitamin D",
+    "description": "Nestlé Purina PetCare is recalling specific lots of Pro Plan Veterinary Diets dog food after testing found elevated vitamin D, which can cause health issues in dogs. Lot codes are printed on the bottom of the bag.",
+    "brand": "Purina Pro Plan",
+    "productName": "Veterinary Diets",
+    "category": "pet_food",
+    "sourceUrl": "https://www.fda.gov/safety/recalls-market-withdrawals-safety-alerts/nestle-purina-petcare-issues-voluntary-recall-select-pro-plan-veterinary-diets-dog-food",
+    "publishedAt": "2024-03-10T00:00:00Z",
+    "criteria": [
+      { "field": "brand", "operator": "contains", "value": "Purina", "rawText": "Purina Pro Plan" },
+      { "field": "product_name", "operator": "contains", "value": "Veterinary", "rawText": "Veterinary Diets" },
+      { "field": "lot_code", "operator": "range", "value": { "min": "2213", "max": "2325" }, "rawText": "Lots 2213 through 2325" }
+    ]
+  }
+]
